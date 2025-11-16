@@ -1,6 +1,7 @@
 ﻿using CommandLine;
 using static IC10_Inliner.IC10Assembler;
 
+string sectionName = "min";
 
 var result = Parser.Default.ParseArguments<AssemblyOptions>(args);
 
@@ -8,6 +9,10 @@ if (result.Errors.Count() == 0 && args.Length > 0)
 {
     bool wait = false;
     var Options = result.Value;
+
+    if (Options.IncludeSections.Any()) {
+        sectionName = Options.IncludeSections.First();
+    }
 
     var ParseResult = Parse(File.ReadAllText(Options.Filename));
     wait |= ParseResult.Warnings.Count > 0;
@@ -21,9 +26,9 @@ if (result.Errors.Count() == 0 && args.Length > 0)
         if (AssemblyResult.Valid)
         {
             string ShortName = Path.GetFileName(Options.Filename);
-            Console.WriteLine($"Assembled {ShortName} => {ShortName[..^4]}.min{ShortName[^4..]}");
+            Console.WriteLine($"Assembled {ShortName} => {ShortName[..^4]}.{sectionName}{ShortName[^4..]}");
             Console.WriteLine($"{AssemblyResult.FinalSections.Count} sections totalling {AssemblyResult.OutputLines.Count} line{(AssemblyResult.OutputLines.Count != 1 ? "s" : "")}");
-            File.WriteAllText(Options.Filename[..^4] + ".min" + Options.Filename[^4..], AssemblyResult.Output);
+            File.WriteAllText(Options.Filename[..^4] + "." + sectionName + Options.Filename[^4..], AssemblyResult.Output);
         }
         else
         {
