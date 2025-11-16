@@ -379,10 +379,10 @@ namespace IC10_Inliner
             return Result;
         }
 
-        internal static uint ComputeHash(string Input)
+        internal static int ComputeHash(string Input)
         {
             var Bytes = Encoding.ASCII.GetBytes(Input);
-            return System.IO.Hashing.Crc32.HashToUInt32(Bytes);
+            return unchecked((int)System.IO.Hashing.Crc32.HashToUInt32(Bytes));
         }
 
         internal static ulong ComputeString(string Input)
