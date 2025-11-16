@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommandLine;
+using System;
 using System.ComponentModel.Design;
 using System.Globalization;
 
