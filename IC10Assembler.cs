@@ -303,7 +303,12 @@ namespace IC10_Inliner
                             ProvidedType = ParameterType.IsRegister;
                         else
                         {
-                            if (Symbol.TryParseHex(ParamString, out ulong Value))
+                            if (Symbol.TryParseBinary(ParamString, out ulong Value))
+                            {
+                                ProvidedType = ParameterType.IsConstant;
+                                ParamString = Value.ToString();
+                            }
+                            else if (Symbol.TryParseHex(ParamString, out Value))
                             {
                                 ProvidedType = ParameterType.IsConstant;
                                 ParamString = Value.ToString();

@@ -47,9 +47,19 @@ namespace IC10_Inliner
                 };
             }
 
+            public static bool TryParseBinary(string input, out ulong Parsed)
+            {
+                if (input.StartsWith("0b", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return ulong.TryParse(input[2..], NumberStyles.BinaryNumber, CultureInfo.InvariantCulture, out Parsed);
+                }
+                Parsed = 0;
+                return false;
+            }
+
             public static bool TryParseHex(string input, out ulong Parsed)
             {
-                if (input.StartsWith("0x"))
+                if (input.StartsWith("0x", StringComparison.InvariantCultureIgnoreCase))
                 {
                     return ulong.TryParse(input[2..], NumberStyles.HexNumber, CultureInfo.InvariantCulture, out Parsed);
                 }
@@ -71,6 +81,8 @@ namespace IC10_Inliner
                 {
                     case SymbolKind.Constant:
                         if (TryParseHex(TextValue, out ulong ValueInt))
+                            Value = ValueInt;
+                        else if (TryParseBinary(TextValue, out ValueInt))
                             Value = ValueInt;
                         else if (double.TryParse(TextValue, out double NewValue))
                             Value = NewValue;
