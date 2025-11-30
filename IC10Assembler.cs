@@ -78,6 +78,11 @@ namespace IC10_Inliner
                 string Directive = Parsed.Groups["Directive"].Value.ToLower();
                 switch (Directive)
                 {
+                    case "import_symbols":
+
+                        // TODO
+
+                        break;
                     case "alias":
                     case "define":
                         if (!Parsed.Groups["Params"].Success || Parsed.Groups["Params"].Captures.Count != 2)
