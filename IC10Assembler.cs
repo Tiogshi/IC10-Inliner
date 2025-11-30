@@ -1,5 +1,4 @@
 ﻿using CommandLine;
-using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using static IC10_Inliner.IC10Instruction;

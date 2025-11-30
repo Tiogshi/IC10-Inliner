@@ -10,7 +10,8 @@ if (result.Errors.Count() == 0 && args.Length > 0)
     bool wait = false;
     var Options = result.Value;
 
-    if (Options.IncludeSections.Any()) {
+    if (Options.IncludeSections.Any())
+    {
         sectionName = Options.IncludeSections.First();
     }
 
