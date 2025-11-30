@@ -29,6 +29,22 @@ if (result.Errors.Count() == 0 && args.Length > 0)
             Console.WriteLine($"Assembled {ShortName} => {ShortName[..^4]}.{sectionName}{ShortName[^4..]}");
             Console.WriteLine($"{AssemblyResult.FinalSections.Count} sections totalling {AssemblyResult.OutputLines.Count} line{(AssemblyResult.OutputLines.Count != 1 ? "s" : "")}");
             File.WriteAllText(Options.Filename[..^4] + "." + sectionName + Options.Filename[^4..], AssemblyResult.Output);
+
+            using var SymbolFile = File.OpenWrite(Options.Filename[..^4] + "." + sectionName + ".sym");
+            using StreamWriter writer = new(SymbolFile);
+            string last_section = "";
+            foreach (var Symbol in AssemblyResult.Symbols)
+            {
+                if (!AssemblyResult.FinalSections.Contains(Symbol.Section))
+                    continue;
+
+                if (last_section != Symbol.Section.Name)
+                    writer.WriteLine($"section {Symbol.Section.Name} offset {Symbol.Section.Offset}");
+
+                last_section = Symbol.Section.Name;
+                writer.WriteLine($"  {Symbol.SymbolName} offset {Symbol.Value}");
+            }
+
         }
         else
         {

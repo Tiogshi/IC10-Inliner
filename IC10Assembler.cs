@@ -449,6 +449,7 @@ namespace IC10_Inliner
             public List<string> Warnings = [];
             public List<string> Errors = [];
             public List<string> OutputLines = [];
+            public List<Symbol> Symbols = [];
 
             public List<ProgramSection> FinalSections = [];
 
@@ -459,6 +460,8 @@ namespace IC10_Inliner
             {
                 Warnings.AddRange(ParseFaults.Warnings);
                 Errors.AddRange(ParseFaults.Errors);
+
+                Symbols.AddRange(ParseFaults.Program.Sections.SelectMany(x => x.Symbols.Values).Where(x => x.SymbolType == Symbol.SymbolKind.Label));
             }
         }
     }
