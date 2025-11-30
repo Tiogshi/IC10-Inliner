@@ -33,7 +33,7 @@ namespace IC10_Inliner
 
             void AddSymbol(Symbol NewSymbol)
             {
-                if (Program.Symbols.Contains(NewSymbol.SymbolName))
+                if (CurrentSection.Symbols.ContainsKey(NewSymbol.SymbolName))
                 {
                     Error($"Duplicate Symbol {NewSymbol.SymbolName}");
                     return;
@@ -233,7 +233,7 @@ namespace IC10_Inliner
 
             Symbol? ResolveSymbol(string Symbol, bool IgnoreFailedResolve)
             {
-                // Symbols also only limited to pre-defined stuff
+                // Look for non-weak symbols first
                 for (int i = 0; i < SectionIdx; i++)
                     if (Sections[i].Symbols.TryGetValue(Symbol, out Symbol? value))
                         return value;
@@ -241,10 +241,14 @@ namespace IC10_Inliner
                 if (ParseResult.Program.Symbols.Contains(Symbol))
                 {
                     if (Sections.Any(x => x.Symbols.ContainsKey(Symbol)))
-                        Error($"Use before define of symbol {Symbol}");
-                    else
-                        Error($"{Symbol} not defined in included section");
+                        Warning($"Use before define of symbol {Symbol}");
+                    else if (!ParseResult.Program.Sections.Any(x => x.Symbols.ContainsKey(Symbol)))
+                        Error($"{Symbol} not defined");
                 }
+
+                for (int i = 0; i < ParseResult.Program.Sections.Count; i++)
+                    if (ParseResult.Program.Sections[i].Symbols.TryGetValue(Symbol, out Symbol? value))
+                        return value;
 
                 if (!IgnoreFailedResolve)
                     Error($"Unable to resolve symbol {Symbol}");
