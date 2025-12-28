@@ -29,10 +29,14 @@ if (result.Errors.Count() == 0 && args.Length > 0)
             foreach (var warning in AssemblyResult.Warnings)
                 Console.WriteLine($"Warning: {warning}");
 
-            string ShortName = Path.GetFileName(Options.Filename);
-            Console.WriteLine($"Assembled {ShortName} => {ShortName[..^4]}.{sectionName}{ShortName[^4..]}");
+
+            string Extension = Path.GetExtension(Options.Filename);
+            string ShortName = Path.GetFileNameWithoutExtension(Options.Filename);
+            string LongFilename = Options.Filename[..^Extension.Length];
+
+            Console.WriteLine($"Assembled {ShortName} => {ShortName}.{sectionName}{Extension}");
             Console.WriteLine($"{AssemblyResult.FinalSections.Count} sections totalling {AssemblyResult.OutputLines.Count} line{(AssemblyResult.OutputLines.Count != 1 ? "s" : "")}");
-            File.WriteAllText(Options.Filename[..^4] + "." + sectionName + Options.Filename[^4..], AssemblyResult.Output);
+            File.WriteAllText($"{LongFilename}{sectionName}{Extension}", AssemblyResult.Output);
 
             File.Delete(Options.Filename[..^4] + "." + sectionName + ".sym");
             using var SymbolFile = File.OpenWrite(Options.Filename[..^4] + "." + sectionName + ".sym");
