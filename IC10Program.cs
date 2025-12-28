@@ -110,7 +110,7 @@ namespace IC10_Inliner
 
         public readonly struct ProgramLine()
         {
-            public string OpCode { get; init; } = string.Empty;
+            public string? OpCode { get; init; } = string.Empty;
 
             public string Directive { get; init; } = string.Empty;
 
