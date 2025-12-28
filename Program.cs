@@ -36,10 +36,10 @@ if (result.Errors.Count() == 0 && args.Length > 0)
 
             Console.WriteLine($"Assembled {ShortName} => {ShortName}.{sectionName}{Extension}");
             Console.WriteLine($"{AssemblyResult.FinalSections.Count} sections totalling {AssemblyResult.OutputLines.Count} line{(AssemblyResult.OutputLines.Count != 1 ? "s" : "")}");
-            File.WriteAllText($"{LongFilename}{sectionName}{Extension}", AssemblyResult.Output);
+            File.WriteAllText($"{LongFilename}.{sectionName}{Extension}", AssemblyResult.Output);
 
-            File.Delete(Options.Filename[..^4] + "." + sectionName + ".sym");
-            using var SymbolFile = File.OpenWrite(Options.Filename[..^4] + "." + sectionName + ".sym");
+            File.Delete($"{LongFilename}.{sectionName}.sym");
+            using var SymbolFile = File.OpenWrite($"{LongFilename}.{sectionName}.sym");
             using StreamWriter writer = new(SymbolFile);
             string last_section = "";
             foreach (var Symbol in AssemblyResult.Symbols)
