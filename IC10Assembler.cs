@@ -96,7 +96,11 @@ namespace IC10_Inliner
 
                         if (Directive == "define")
                         {
-                            AddSymbol(new Symbol(CurrentSection, Param1, Param2, Symbol.SymbolKind.Constant));
+                            if (Param1.Contains('.'))
+                                Error("Cannot create symbol with period in name");
+                            else
+                                AddSymbol(new Symbol(CurrentSection, Param1, Param2, Symbol.SymbolKind.Constant));
+
                             continue;
                         }
 
@@ -283,7 +287,7 @@ namespace IC10_Inliner
                     {
                         var ParamString = ParamOrig;
                         var NoSub = (ParamMeta & ParameterType.NoSubstitution) == ParameterType.NoSubstitution;
-                        var AllowUnknown = (ParamMeta & ParameterType.AllowUnknownSymbol) ==
+                        var AllowUnknown = ParamString.Contains('.') || (ParamMeta & ParameterType.AllowUnknownSymbol) ==
                                            ParameterType.AllowUnknownSymbol;
 
                         if (!NoSub)
@@ -333,7 +337,7 @@ namespace IC10_Inliner
 
                         // If our discerned type doesn't match the expected type (with an abort for enum-friendly types), we lodge an error
                         if (((ParamMeta & ProvidedType) != ProvidedType) &&
-                            ProvidedType != ParameterType.IsUnknownSymbol && !AllowUnknown)
+                            (ProvidedType != ParameterType.IsUnknownSymbol || !AllowUnknown))
                             Error("Parameter type mismatch");
 
                         // If this is a HASH() or STR() macro, then we preprocess it
@@ -391,6 +395,10 @@ namespace IC10_Inliner
 
             Symbol? ResolveSymbol(string Symbol, bool IgnoreFailedResolve)
             {
+                // If Symbol has a dot in it, assume it's one of the builtin enums and elide as-is
+                if (Symbol.Contains('.'))
+                    IgnoreFailedResolve = true;
+
                 // Look for non-weak symbols first
                 for (var i = 0; i < SectionIdx; i++)
                     if (Sections[i].Symbols.TryGetValue(Symbol, out var value))
@@ -407,6 +415,7 @@ namespace IC10_Inliner
                 foreach (var t in ParseResult.Program.Sections)
                     if (t.Symbols.TryGetValue(Symbol, out var value))
                         return value;
+
 
                 if (!IgnoreFailedResolve)
                     Error($"Unable to resolve symbol {Symbol}");
