@@ -18,48 +18,7 @@ namespace IC10_Inliner
 
             string[] Lines = input.Split("\n", StringSplitOptions.TrimEntries);
             int SourceLine = -1;
-            int CodeLineIndex = 0;
             int SectionLineIndex = 0;
-
-            void Warning(string Message)
-            {
-                Result.Warnings.Add(string.Format("{0} at line {1}", Message, SourceLine));
-            }
-
-            void Error(string Message)
-            {
-                Result.Errors.Add(string.Format("{0} at line {1}", Message, SourceLine));
-            }
-
-            void AddSymbol(Symbol NewSymbol)
-            {
-                if (CurrentSection.Symbols.ContainsKey(NewSymbol.SymbolName))
-                {
-                    Error($"Duplicate Symbol {NewSymbol.SymbolName}");
-                    return;
-                }
-
-                CurrentSection.Symbols[NewSymbol.SymbolName] = NewSymbol;
-                Program.Symbols.Add(NewSymbol.SymbolName);
-            }
-
-            void Elide(string Opcode, params string[]? Parameters)
-            {
-                var NewLine = new ProgramLine()
-                {
-                    OpCode = Opcode,
-                    Params = Parameters?.ToList() ?? [],
-                    OriginalCodeLine = SourceLine,
-                    SectionOffset = SectionLineIndex
-                };
-
-                if (!string.IsNullOrEmpty(Opcode))
-                {
-                    CurrentSection.Lines.Add(NewLine);
-                    CodeLineIndex++;
-                    SectionLineIndex++;
-                }
-            }
 
             foreach (var Line in Lines)
             {
@@ -75,7 +34,7 @@ namespace IC10_Inliner
                     continue;
                 }
 
-                string Directive = Parsed.Groups["Directive"].Value.ToLower();
+                var Directive = Parsed.Groups["Directive"].Value.ToLower();
                 switch (Directive)
                 {
                     case "import_symbols":
@@ -184,6 +143,41 @@ namespace IC10_Inliner
                 Result.SectionNames.Add(CurrentSection.Name);
 
             return Result;
+
+            void Warning(string Message)
+            {
+                Result.Warnings.Add($"{Message} at line {SourceLine}");
+            }
+
+            void Error(string Message)
+            {
+                Result.Errors.Add($"{Message} at line {SourceLine}");
+            }
+
+            void AddSymbol(Symbol NewSymbol)
+            {
+                if (CurrentSection.Symbols.TryAdd(NewSymbol.SymbolName, NewSymbol))
+                    return;
+                
+                Error($"Duplicate Symbol {NewSymbol.SymbolName}");
+            }
+
+            void Elide(string Opcode, params string[]? Parameters)
+            {
+                var NewLine = new ProgramLine()
+                {
+                    OpCode = Opcode,
+                    Params = Parameters?.ToList() ?? [],
+                    OriginalCodeLine = SourceLine,
+                    SectionOffset = SectionLineIndex
+                };
+
+                if (!string.IsNullOrEmpty(Opcode))
+                {
+                    CurrentSection.Lines.Add(NewLine);
+                    SectionLineIndex++;
+                }
+            }
         }
 
         public static AssemblyResult Assemble(ParseResult ParseResult, AssemblyOptions Options)
@@ -475,7 +469,7 @@ namespace IC10_Inliner
         }
 
         // ReSharper disable once ClassNeverInstantiated.Global
-        // (This is instantiated via reflection in the CommandLine library)
+        // (This is instantiated as a generic in the CommandLine library)
         public class AssemblyOptions
         {
             [Value(0, Required = true)] public string Filename { get; set; } = "";

@@ -1,7 +1,4 @@
-﻿using CommandLine;
-using System;
-using System.ComponentModel.Design;
-using System.Globalization;
+﻿using System.Globalization;
 
 namespace IC10_Inliner
 {
@@ -17,7 +14,7 @@ namespace IC10_Inliner
             public Dictionary<string, Symbol> Symbols { get; } = [];
             public Dictionary<string, string> Aliases { get; } = [];
             public List<ProgramLine> Lines { get; set; } = [];
-            public int Offset { get; set; } = 0;
+            public int Offset { get; set; }
             public int Size => Lines.Count;
             public string Name { get; init; } = SectionName;
             public List<string> RequiredSections { get; init; } = ReqSections ?? [];
@@ -39,11 +36,11 @@ namespace IC10_Inliner
 
             public bool IsValidConstant => Value is not null || SymbolType == SymbolKind.Label || IC10Assembler.Macro().IsMatch(EnumValue);
 
-            public string Resolve(ProgramSection Section)
+            public string Resolve(ProgramSection FromSection)
             {
                 return SymbolType switch
                 {
-                    SymbolKind.Label => ((Value ?? 0.0) + Section.Offset).ToString(),
+                    SymbolKind.Label => ((Value ?? 0.0) + FromSection.Offset).ToString(),
                     _ => Value?.ToString() ?? EnumValue,
                 };
             }
@@ -81,11 +78,9 @@ namespace IC10_Inliner
                 switch (Type)
                 {
                     case SymbolKind.Constant:
-                        if (TryParseHex(TextValue, out ulong ValueInt))
+                        if (TryParseHex(TextValue, out var ValueInt) || TryParseBinary(TextValue, out ValueInt))
                             Value = ValueInt;
-                        else if (TryParseBinary(TextValue, out ValueInt))
-                            Value = ValueInt;
-                        else if (double.TryParse(TextValue, out double NewValue))
+                        else if (double.TryParse(TextValue, out var NewValue))
                             Value = NewValue;
                         EnumValue = TextValue;
 
