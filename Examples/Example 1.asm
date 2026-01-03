@@ -27,3 +27,9 @@ counter_wait_loop:
   mod Counter Counter 3600
   yield
   j counter_wait_loop
+
+section jump_relative requires definitions
+  jr test_label
+
+test_label:
+  jr 0

@@ -291,6 +291,8 @@ namespace IC10_Inliner
 
                         var ProvidedType = ParameterType.IsUnknownSymbol;
 
+                        var isLabel = false;
+
                         // Since I'm not smarter earlier on, instead we try to discern what the parameter is through various examinations
                         if (double.TryParse(ParamString, out _) || Macro().IsMatch(ParamString))
                             ProvidedType = ParameterType.IsConstant;
@@ -317,6 +319,8 @@ namespace IC10_Inliner
                                     (!NoSub) // If the symbol is valid, only resolve it if this instructions allows (e.g. don't do so for alias lines)
                                 {
                                     ParamString = symbol.Resolve(Section);
+                                    isLabel = symbol.SymbolType == Symbol.SymbolKind.Label;
+
                                     ProvidedType = symbol.SymbolType switch
                                     {
                                         Symbol.SymbolKind.Constant => ParameterType.IsConstant,
@@ -349,7 +353,15 @@ namespace IC10_Inliner
                         if ((ParamMeta & ParameterType.BranchRelative) != 0)
                         {
                             if (int.TryParse(ParamString, out int LabelAddress))
-                                ParamString = (LabelAddress - (ProgramLine.SectionOffset + Section.Offset)).ToString();
+                            {
+                                if (isLabel)
+                                    ParamString = (LabelAddress - (ProgramLine.SectionOffset + Section.Offset)).ToString();
+                                else
+                                {
+                                    Warning($"Non-label constant {ParamString} will not be relativized");
+                                    ParamString = LabelAddress.ToString();
+                                }
+                            }
                             else if
                                 (!Register()
                                      .IsMatch(
