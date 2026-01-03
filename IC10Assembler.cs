@@ -474,6 +474,8 @@ namespace IC10_Inliner
             }
         }
 
+        // ReSharper disable once ClassNeverInstantiated.Global
+        // (This is instantiated via reflection in the CommandLine library)
         public class AssemblyOptions
         {
             [Value(0, Required = true)] public string Filename { get; set; } = "";
@@ -481,7 +483,7 @@ namespace IC10_Inliner
             [Option('c', "comments", Default = false)]
             public bool IncludeComments { get; set; } = false;
 
-            [Option('s', "sections")] public IEnumerable<string> IncludeSections { get; set; } = [];
+            [Option('s', "sections")] public IEnumerable<string>? IncludeSections { get; set; } = [];
 
             [Option('m', "keep-macros", Default = false)]
             public bool ElideMacros { get; set; } = false;

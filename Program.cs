@@ -1,7 +1,7 @@
 ﻿using CommandLine;
 using static IC10_Inliner.IC10Assembler;
 
-string sectionName = "min";
+var sectionName = "min";
 
 var result = Parser.Default.ParseArguments<AssemblyOptions>(args);
 
@@ -29,10 +29,9 @@ if (result.Errors.Count() == 0 && args.Length > 0)
             foreach (var warning in AssemblyResult.Warnings)
                 Console.WriteLine($"Warning: {warning}");
 
-
-            string Extension = Path.GetExtension(Options.Filename);
-            string ShortName = Path.GetFileNameWithoutExtension(Options.Filename);
-            string LongFilename = Options.Filename[..^Extension.Length];
+            var Extension = Path.GetExtension(Options.Filename);
+            var ShortName = Path.GetFileNameWithoutExtension(Options.Filename);
+            var LongFilename = Options.Filename[..^Extension.Length];
 
             Console.WriteLine($"Assembled {ShortName} => {ShortName}.{sectionName}{Extension}");
             Console.WriteLine($"{AssemblyResult.FinalSections.Count} sections totalling {AssemblyResult.OutputLines.Count} line{(AssemblyResult.OutputLines.Count != 1 ? "s" : "")}");
@@ -41,8 +40,8 @@ if (result.Errors.Count() == 0 && args.Length > 0)
             File.Delete($"{LongFilename}.{sectionName}.sym");
             using var SymbolFile = File.OpenWrite($"{LongFilename}.{sectionName}.sym");
             using StreamWriter writer = new(SymbolFile);
-            string last_section = "";
-            foreach (var Symbol in AssemblyResult.Symbols)
+            var last_section = "";
+            foreach (var Symbol in AssemblyResult.Symbols.Where(Symbol => AssemblyResult.FinalSections.Contains(Symbol.Section)))
             {
                 if (!AssemblyResult.FinalSections.Contains(Symbol.Section))
                     continue;
