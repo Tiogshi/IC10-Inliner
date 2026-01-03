@@ -5,15 +5,14 @@ var sectionName = "min";
 
 var result = Parser.Default.ParseArguments<AssemblyOptions>(args);
 
-if (result.Errors.Count() == 0 && args.Length > 0)
+if (!result.Errors.Any() && args.Length > 0)
 {
     bool wait = false;
     var Options = result.Value;
 
-    if (Options.IncludeSections.Any())
-    {
+    if (Options.IncludeSections?.Any() ?? false)
         sectionName = Options.IncludeSections.First();
-    }
+    
 
     var ParseResult = Parse(File.ReadAllText(Options.Filename));
     wait |= ParseResult.Warnings.Count > 0;
@@ -43,9 +42,6 @@ if (result.Errors.Count() == 0 && args.Length > 0)
             var last_section = "";
             foreach (var Symbol in AssemblyResult.Symbols.Where(Symbol => AssemblyResult.FinalSections.Contains(Symbol.Section)))
             {
-                if (!AssemblyResult.FinalSections.Contains(Symbol.Section))
-                    continue;
-
                 if (last_section != Symbol.Section.Name)
                     writer.WriteLine($"section {Symbol.Section.Name} offset {Symbol.Section.Offset}");
 
