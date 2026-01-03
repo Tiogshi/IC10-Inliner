@@ -33,3 +33,4 @@ section jump_relative requires definitions
 
 test_label:
   jr 0
+  select r14 r0 STR("<LEFT") STR("RIGHT>")
