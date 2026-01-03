@@ -7,7 +7,7 @@ var result = Parser.Default.ParseArguments<AssemblyOptions>(args);
 
 if (!result.Errors.Any() && args.Length > 0)
 {
-    bool wait = false;
+    var Failed = false;
     var Options = result.Value;
 
     if (Options.IncludeSections?.Any() ?? false)
@@ -15,13 +15,13 @@ if (!result.Errors.Any() && args.Length > 0)
     
 
     var ParseResult = Parse(File.ReadAllText(Options.Filename));
-    wait |= ParseResult.Warnings.Count > 0;
+    Failed |= ParseResult.Warnings.Count > 0;
 
     if (ParseResult.Valid)
     {
         var AssemblyResult = Assemble(ParseResult, Options);
 
-        wait |= AssemblyResult.Warnings.Count > 0;
+        Failed |= AssemblyResult.Warnings.Count > 0;
 
         if (AssemblyResult.Valid)
         {
@@ -52,7 +52,7 @@ if (!result.Errors.Any() && args.Length > 0)
         }
         else
         {
-            wait = true;
+            Failed = true;
             Console.WriteLine($"Failed to assemble {Options.Filename}");
             foreach (var warning in ParseResult.Warnings)
                 Console.WriteLine($"Warning: {warning}");
@@ -64,7 +64,7 @@ if (!result.Errors.Any() && args.Length > 0)
     }
     else
     {
-        wait = true;
+        Failed = true;
         Console.WriteLine($"Failed to parse file {Options.Filename}");
         foreach (var error in ParseResult.Errors)
             Console.WriteLine($"Error: {error}");
@@ -72,9 +72,6 @@ if (!result.Errors.Any() && args.Length > 0)
     foreach (var warning in ParseResult.Warnings)
         Console.WriteLine($"Warning: {warning}");
 
-    if (wait)
-    {
-        Console.Write("Press Enter to continue");
-        Console.ReadLine();
-    }
+    return Failed ? 1 : 0;
 }
+return -1;
