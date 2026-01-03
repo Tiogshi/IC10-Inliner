@@ -424,7 +424,7 @@ namespace IC10_Inliner
         }
 
         [GeneratedRegex(
-            @"^\s*(?:(?:(?<Directive>alias|section|define)|(?:(?<Label>[a-zA-Z_][a-zA-Z0-9_]*):\s*)?(?:(?<Opcode>[a-zA-Z]+))?)(?:[^\S\r\n]+(?<Params>(?:0x|\$)?[a-zA-Z0-9_\-\.:]+|(?:[hH][aA][sS][hH]|[sS][tT][rR])\(\"".*\""\)))*)(?:\s*[#;]\s*(?<Comment>.*))?\\?$")]
+            @"^\s*(?:(?:(?<Directive>alias|section|define)|(?:(?<Label>[a-zA-Z_][a-zA-Z0-9_]*):\s*)?(?:(?<Opcode>[a-zA-Z]+))?)(?:[^\S\r\n]+(?<Params>(?:0x|\$)?[a-zA-Z0-9_\+\-\.:]+|(?:[hH][aA][sS][hH]|[sS][tT][rR])\(\"".*\""\)))*)(?:\s*[#;]\s*(?<Comment>.*))?\\?$")]
         private static partial Regex LineFormat();
 
         [GeneratedRegex("^(?:sp|r+(?:[0-9a]|1[0-5]))$")]
