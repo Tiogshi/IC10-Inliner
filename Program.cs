@@ -15,13 +15,11 @@ if (!result.Errors.Any() && args.Length > 0)
     
 
     var ParseResult = Parse(File.ReadAllText(Options.Filename));
-    Failed |= ParseResult.Warnings.Count > 0;
 
     if (ParseResult.Valid)
     {
         var AssemblyResult = Assemble(ParseResult, Options);
 
-        Failed |= AssemblyResult.Warnings.Count > 0;
 
         if (AssemblyResult.Valid)
         {
