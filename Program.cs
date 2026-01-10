@@ -34,17 +34,20 @@ if (!result.Errors.Any() && args.Length > 0)
             Console.WriteLine($"{AssemblyResult.FinalSections.Count} sections totalling {AssemblyResult.OutputLines.Count} line{(AssemblyResult.OutputLines.Count != 1 ? "s" : "")}");
             File.WriteAllText($"{LongFilename}.{sectionName}{Extension}", AssemblyResult.Output);
 
-            File.Delete($"{LongFilename}.{sectionName}.sym");
-            using var SymbolFile = File.OpenWrite($"{LongFilename}.{sectionName}.sym");
-            using StreamWriter writer = new(SymbolFile);
-            var last_section = "";
-            foreach (var Symbol in AssemblyResult.Symbols.Where(Symbol => AssemblyResult.FinalSections.Contains(Symbol.Section)))
+            if (Options.EmitSymbolFile)
             {
-                if (last_section != Symbol.Section.Name)
-                    writer.WriteLine($"section {Symbol.Section.Name} offset {Symbol.Section.Offset}");
+                File.Delete($"{LongFilename}.{sectionName}.sym");
+                using var SymbolFile = File.OpenWrite($"{LongFilename}.{sectionName}.sym");
+                using StreamWriter writer = new(SymbolFile);
+                var last_section = "";
+                foreach (var Symbol in AssemblyResult.Symbols.Where(Symbol => AssemblyResult.FinalSections.Contains(Symbol.Section)))
+                {
+                    if (last_section != Symbol.Section.Name)
+                        writer.WriteLine($"section {Symbol.Section.Name} offset {Symbol.Section.Offset}");
 
-                last_section = Symbol.Section.Name;
-                writer.WriteLine($"  {Symbol.SymbolName} offset {Symbol.Value}");
+                    last_section = Symbol.Section.Name;
+                    writer.WriteLine($"  {Symbol.SymbolName} offset {Symbol.Value}");
+                }
             }
 
         }
