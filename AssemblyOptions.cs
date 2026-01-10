@@ -22,5 +22,8 @@ public static partial class IC10Assembler
 
         [Option('S', "symbols", Default = false)]
         public bool EmitSymbolFile { get; set; } = false;
+        
+        [Option('o', "stdout", Default = false)]
+        public bool OutputToSTDOUT { get; set; } = false;
     }
 }
