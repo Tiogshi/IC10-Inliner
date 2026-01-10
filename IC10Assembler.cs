@@ -1,5 +1,4 @@
-﻿using CommandLine;
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
 using static IC10_Inliner.IC10Instruction;
 using static IC10_Inliner.IC10Program;
@@ -146,12 +145,12 @@ namespace IC10_Inliner
 
             void Warning(string Message)
             {
-                Result.Warnings.Add($"{Message} at line {SourceLine}");
+                Result.Warnings.Add($"{Message} at line {SourceLine + 1}");
             }
 
             void Error(string Message)
             {
-                Result.Errors.Add($"{Message} at line {SourceLine}");
+                Result.Errors.Add($"{Message} at line {SourceLine + 1}");
             }
 
             void AddSymbol(Symbol NewSymbol)
@@ -225,9 +224,9 @@ namespace IC10_Inliner
             int SourceLine = 0;
             int SectionIdx = 0;
 
-            void Warning(string Message) => Result.Warnings.Add(string.Format("{0} at line {1}", Message, SourceLine));
+            void Warning(string Message) => Result.Warnings.Add(string.Format("{0} at line {1}", Message, SourceLine + 1));
 
-            void Error(string Message) => Result.Errors.Add(string.Format("{0} at line {1}", Message, SourceLine));
+            void Error(string Message) => Result.Errors.Add(string.Format("{0} at line {1}", Message, SourceLine + 1));
 
 
             string ResolveAlias(string Alias)

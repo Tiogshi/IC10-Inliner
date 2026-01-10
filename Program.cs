@@ -24,14 +24,14 @@ if (!result.Errors.Any() && args.Length > 0)
         if (AssemblyResult.Valid)
         {
             foreach (var warning in AssemblyResult.Warnings)
-                Console.WriteLine($"Warning: {warning}");
+                Console.Error.WriteLine($"Warning: {warning}");
 
             var Extension = Path.GetExtension(Options.Filename);
             var ShortName = Path.GetFileNameWithoutExtension(Options.Filename);
             var LongFilename = Options.Filename[..^Extension.Length];
 
-            Console.WriteLine($"Assembled {ShortName} => {ShortName}.{sectionName}{Extension}");
-            Console.WriteLine($"{AssemblyResult.FinalSections.Count} sections totalling {AssemblyResult.OutputLines.Count} line{(AssemblyResult.OutputLines.Count != 1 ? "s" : "")}");
+            Console.Out.WriteLine($"Assembled {ShortName} => {ShortName}.{sectionName}{Extension}");
+            Console.Out.WriteLine($"{AssemblyResult.FinalSections.Count} sections totalling {AssemblyResult.OutputLines.Count} line{(AssemblyResult.OutputLines.Count != 1 ? "s" : "")} of code");
             File.WriteAllText($"{LongFilename}.{sectionName}{Extension}", AssemblyResult.Output);
 
             if (Options.EmitSymbolFile)
@@ -54,24 +54,24 @@ if (!result.Errors.Any() && args.Length > 0)
         else
         {
             Failed = true;
-            Console.WriteLine($"Failed to assemble {Options.Filename}");
+            Console.Error.WriteLine($"Failed to assemble {Options.Filename}");
             foreach (var warning in ParseResult.Warnings)
-                Console.WriteLine($"Warning: {warning}");
+                Console.Error.WriteLine($"Warning: {warning}");
             foreach (var warning in AssemblyResult.Warnings)
-                Console.WriteLine($"Warning: {warning}");
+                Console.Error.WriteLine($"Warning: {warning}");
             foreach (var error in AssemblyResult.Errors)
-                Console.WriteLine($"Error: {error}");
+                Console.Error.WriteLine($"Error: {error}");
         }
     }
     else
     {
         Failed = true;
-        Console.WriteLine($"Failed to parse file {Options.Filename}");
+        Console.Error.WriteLine($"Failed to parse file {Options.Filename}");
         foreach (var error in ParseResult.Errors)
-            Console.WriteLine($"Error: {error}");
+            Console.Error.WriteLine($"Error: {error}");
     }
     foreach (var warning in ParseResult.Warnings)
-        Console.WriteLine($"Warning: {warning}");
+        Console.Error.WriteLine($"Warning: {warning}");
 
     return Failed ? 1 : 0;
 }
