@@ -438,18 +438,16 @@ namespace IC10_Inliner
             return output;
         }
 
-        [GeneratedRegex(
-            """^\s*(?:(?:(?<Directive>alias|section|define)|(?:(?<Label>[a-zA-Z_][a-zA-Z0-9_]*):\s*)?(?:(?<Opcode>[a-zA-Z]+))?)(?:[^\S\r\n]+(?<Params>(?:0x|\$)?[a-zA-Z0-9_\+\-\.:]+|(?:[hH][aA][sS][hH]|[sS][tT][rR])\(\"[^\"]*\"\)))*?)(?:\s*[#;]\s*(?<Comment>.*))?\\?$""")]
+        [GeneratedRegex("""^\s*(?:(?:(?<Directive>alias|section|define)|(?:(?<Label>[a-zA-Z_][a-zA-Z0-9_]*):\s*)?(?:(?<Opcode>[a-zA-Z]+))?)(?:[^\S\r\n]+(?<Params>(?:0x|\$)?[a-zA-Z0-9_\+\-\.:]+|(?:[hH][aA][sS][hH]|[sS][tT][rR])\(\"[^\"]*\"\)))*?)(?:\s*[#;]\s*(?<Comment>.*))?\\?$""")]
         private static partial Regex LineFormat();
 
-        [GeneratedRegex("^(?:sp|r+(?:[0-9a]|1[0-5]))$")]
+        [GeneratedRegex("""^(?:sp|r+(?:[0-9a]|1[0-5]))$""")]
         private static partial Regex Register();
 
-
-        [GeneratedRegex(@"^(?:[hH][aA][sS][hH]|[sS][tT][rR])\(\"".*\""\)$")]
+        [GeneratedRegex("""^(?:[hH][aA][sS][hH]|[sS][tT][rR])\(\".*\"\)$""")]
         internal static partial Regex Macro();
 
-        [GeneratedRegex(@"^d(?:b|[0-5]|r+(?:[0-9a]|1[0-5]))(?::\d)?$")]
+        [GeneratedRegex("""^d(?:b|[0-5]|r+(?:[0-9a]|1[0-5]))(?::\d)?$""")]
         private static partial Regex DevicePin();
 
         public readonly struct ParseResult
