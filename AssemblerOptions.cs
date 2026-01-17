@@ -25,5 +25,8 @@ public static partial class IC10Assembler
         
         [Option('o', "stdout", Default = false)]
         public bool OutputToSTDOUT { get; set; } = false;
+        
+        [Option('z', "size", Default = false)]
+        public bool ReportSizeInfo { get; set; } = false;
     }
 }

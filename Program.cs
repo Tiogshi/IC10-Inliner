@@ -30,11 +30,17 @@ if (!result.Errors.Any() && args.Length > 0)
             var ShortName = Path.GetFileNameWithoutExtension(Options.Filename);
             var LongFilename = Options.Filename[..^Extension.Length];
 
-            if (!Options.OutputToSTDOUT)
+            if (Options.ReportSizeInfo)
+            {
+                Console.Out.WriteLine($"Final product is  {AssemblyResult.OutputLines.Sum(x => x.Length + 2) - 2} ic10 bytes long, containing {AssemblyResult.FinalSections.Count} sections:");
+                foreach(var Section in AssemblyResult.FinalSections)
+                    Console.Out.WriteLine($"  {Section.Name}: {Section.Lines.Count} lines");
+            }
+            else if (!Options.OutputToSTDOUT)
             {
                 Console.Out.WriteLine($"Assembled {ShortName} => {ShortName}.{sectionName}{Extension}");
                 Console.Out.WriteLine(
-                    $"{AssemblyResult.FinalSections.Count} sections totalling {AssemblyResult.OutputLines.Count} line{(AssemblyResult.OutputLines.Count != 1 ? "s" : "")} of code");
+                    $"{AssemblyResult.FinalSections.Count} section{(AssemblyResult.FinalSections.Count > 1 ? "s" : "")} totalling {AssemblyResult.OutputLines.Count} line{(AssemblyResult.OutputLines.Count != 1 ? "s" : "")} of code ({AssemblyResult.OutputLines.Sum(x => x.Length + 2) - 2} ic10 bytes)");
                 File.WriteAllText($"{LongFilename}.{sectionName}{Extension}", AssemblyResult.Output);
 
 
