@@ -228,13 +228,19 @@ namespace IC10_Inliner
 
             void Error(string Message) => Result.Errors.Add(string.Format("{0} at line {1}", Message, SourceLine + 1));
 
-
             string ResolveAlias(string Alias)
             {
+                var Append = "";
+                if (Alias.Contains(':'))
+                {
+                    var Parts = Alias.Split(':');
+                    Alias = Parts[0];
+                    Append = $":{Parts[1]}";
+                }
                 // Aliases can only be used for stuff defined in or before their section (and whose section is included in assembly), for sanity
-                for (int i = 0; i < SectionIdx; i++)
-                    if (Sections[i].Aliases.TryGetValue(Alias, out string? value))
-                        return value;
+                for (var i = 0; i < SectionIdx; i++)
+                    if (Sections[i].Aliases.TryGetValue(Alias, out var value))
+                        return $"{value}{Append}";
 
                 return Alias;
             }
@@ -440,7 +446,7 @@ namespace IC10_Inliner
         [GeneratedRegex("""^\s*(?:(?:(?<Directive>alias|section|define)|(?:(?<Label>[a-zA-Z_][a-zA-Z0-9_]*):\s*)?(?:(?<Opcode>[a-zA-Z]+))?)(?:[^\S\r\n]+(?<Params>(?:0x|\$)?[a-zA-Z0-9_\+\-\.:]+|(?:[hH][aA][sS][hH]|[sS][tT][rR])\(\"[^\"]*\"\)))*?)(?:\s*[#;]\s*(?<Comment>.*))?\\?$""")]
         private static partial Regex LineFormat();
 
-        [GeneratedRegex("""^(?:sp|r+(?:[0-9a]|1[0-5]))$""")]
+        [GeneratedRegex("""^(?:sp|r+(?:[0-9a]|1[0-5]))(?::\d)?$""")]
         private static partial Regex Register();
 
         [GeneratedRegex("""^(?:[hH][aA][sS][hH]|[sS][tT][rR])\(\".*\"\)$""")]
