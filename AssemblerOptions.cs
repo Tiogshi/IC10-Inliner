@@ -6,7 +6,7 @@ namespace IC10_Inliner;
 public static partial class IC10Assembler
 {
     [UsedImplicitly]
-    public class AssemblyOptions
+    public class AssemblerOptions
     {
         [Value(0, Required = true)]
         public string Filename { get; set; } = "";

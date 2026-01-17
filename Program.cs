@@ -3,7 +3,7 @@ using static IC10_Inliner.IC10Assembler;
 
 var sectionName = "min";
 
-var result = Parser.Default.ParseArguments<AssemblyOptions>(args);
+var result = Parser.Default.ParseArguments<AssemblerOptions>(args);
 
 if (!result.Errors.Any() && args.Length > 0)
 {

@@ -179,7 +179,7 @@ namespace IC10_Inliner
             }
         }
 
-        public static AssemblyResult Assemble(ParseResult ParseResult, AssemblyOptions Options)
+        public static AssemblyResult Assemble(ParseResult ParseResult, AssemblerOptions Options)
         {
             AssemblyResult Result = new(ParseResult);
 
