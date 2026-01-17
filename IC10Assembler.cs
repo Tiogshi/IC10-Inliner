@@ -471,9 +471,6 @@ namespace IC10_Inliner
             }
         }
 
-        // ReSharper disable once ClassNeverInstantiated.Global
-        // (This is instantiated as a generic in the CommandLine library)
-
         public struct AssemblyResult
         {
             public readonly List<string> Warnings = [];

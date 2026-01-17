@@ -3,6 +3,9 @@ using JetBrains.Annotations;
 
 namespace IC10_Inliner;
 
+
+// ReSharper disable once ClassNeverInstantiated.Global
+// (This is instantiated as a generic in the CommandLine library)
 public static partial class IC10Assembler
 {
     [UsedImplicitly]
