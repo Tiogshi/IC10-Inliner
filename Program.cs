@@ -1,4 +1,5 @@
 ﻿using CommandLine;
+using IC10_Inliner;
 using static IC10_Inliner.IC10Assembler;
 
 var sectionName = "min";
