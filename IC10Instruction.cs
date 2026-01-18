@@ -62,7 +62,7 @@ public readonly struct IC10Instruction(string Opcode, params ParameterType[] Par
         new("lbs", ParameterType.Register, ParameterType.Numeric, ParameterType.Numeric, ParameterType.Enumeration, ParameterType.Enumeration),
 
         new("sb", ParameterType.Numeric, ParameterType.Enumeration, ParameterType.Numeric),
-        new("sbn", ParameterType.Numeric, ParameterType.Numeric, ParameterType.Enumeration, ParameterType.Numeric),
+        new("sbn", ParameterType.Numeric, ParameterType.Numeric, ParameterType.Enumeration, ParameterType.Enumeration),
         new("sbns", ParameterType.Numeric, ParameterType.Numeric, ParameterType.Numeric, ParameterType.Enumeration, ParameterType.Numeric),
         new("sbs", ParameterType.Numeric, ParameterType.Numeric, ParameterType.Enumeration, ParameterType.Numeric),
 
